@@ -7,13 +7,20 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "text-card-foreground flex flex-col gap-6 rounded-2xl border shadow-sm ",
-        className
-      )}
+          "flex flex-col gap-6 rounded-2xl border shadow-sm text-card-foreground",
+          "bg-[#FFFFFF4F] backdrop-blur-[6px] border-white/30",
+          className
+          )}
       {...props}
     />
   )
 }
+//NO CARD ACIMA FOI MUDADO O  className={cn("text-card-foreground flex flex-col gap-6 rounded-2xl border shadow-sm ",
+ //       className
+ //     )}
+
+ //PARA O ATUAL PARA DAR UM EFEITO DE TRANSPARENTE/VIDRO :D
+
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (

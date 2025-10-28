@@ -10,7 +10,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, className, reversed = false, ...props }: AuthLayoutProps & React.ComponentProps<"div">) {
   return (
-    <div className={cn("h-[80vh] flex items-center justify-center overflow-hidden", className)} {...props}>
+    <div className={cn("h-[90vh] flex items-center justify-center overflow-hidden", className)} {...props}> {/*modifiquei de 80hv pra 90hv pra centralizar */}
       <Card className="w-[80vw] max-h-[80vh] rounded-[30px]">
         <CardContent className="grid p-0 md:grid-cols-2 h-full">
           {reversed ? (

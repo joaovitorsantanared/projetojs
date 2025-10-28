@@ -50,7 +50,7 @@ export function SignupForm({
           required
         />
 
-        <Button type="submit">CADASTRAR</Button>
+        <Button type="submit">CADASTRE-SE</Button>
 
         <AuthLinks 
           signUpHref={routes.login}
