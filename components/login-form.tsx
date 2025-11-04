@@ -28,18 +28,28 @@ export function LoginForm({
         
         <AuthFormField
           id="password"
-          label="Password"
+          label="Senha"
           type="password"
           placeholder="Digite a sua senha"
           required
         />
 
+        {/* 🔹 Mostra apenas o link "Esqueci minha senha" */}
         <AuthLinks 
           forgotPasswordHref={routes.esqueciSenha}
-          signUpHref={routes.cadastro}
+          showForgotPassword={true}
+          showSignUp={false}
         />
-        
+
+        {/* 🔹 Botão ENTRAR agora vem logo abaixo */}
         <Button type="submit">ENTRAR</Button>
+
+        {/* 🔹 Mostra apenas "Não tem uma conta? Cadastre-se" */}
+        <AuthLinks 
+          signUpHref={routes.cadastro}
+          showForgotPassword={false}
+          showSignUp={true}
+        />
       </FieldGroup>
     </AuthLayout>
   );

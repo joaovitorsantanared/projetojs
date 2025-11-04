@@ -31,6 +31,7 @@ export function AuthLinks({
           {signUpText.includes("?") ? (
             <>{signUpText.split("?")[0]}? <Link href={signUpHref}>{signUpText.split("?")[1].trim()}</Link></>
           ) : (
+            
             <Link href={signUpHref}>{signUpText}</Link>
           )}
         </FieldDescription>

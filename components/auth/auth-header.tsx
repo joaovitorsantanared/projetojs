@@ -12,6 +12,7 @@ export function AuthHeader({ title, description }: AuthHeaderProps) {
       <p className="text-balance text-white">
         {description}
       </p>
+      
     </div>
   );
 }

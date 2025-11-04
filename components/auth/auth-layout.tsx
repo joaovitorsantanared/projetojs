@@ -29,6 +29,7 @@ export function AuthLayout({ children, className, reversed = false, ...props }: 
               </form>
               <div className="flex items-center justify-center bg-white rounded-2xl p-6 md:p-8">
                 <Vector />
+                
               </div>
             </>
           )}
