@@ -1,4 +1,4 @@
-export const routes = {
+export const routes = { //é o que puxa pra outras páginas
   home: '/',
   login: '/login',
   cadastro: '/cadastro', 
