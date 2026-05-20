@@ -1,0 +1,183 @@
+/* RelatorioList */
+
+.cardlist,
+.cardlist2 {
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  gap: 4px;
+
+  padding: 25px;
+
+  margin-top: 20px;
+  margin-bottom: 40px;
+
+  border-radius: 10px;
+
+  box-shadow: 0 2px 6px #0f4f55;
+
+  flex: 1;
+
+  transition: transform 0.2s ease;
+}
+
+.cardlist2 {
+  margin-left: 250px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  align-items: center;
+
+  padding: 19px 16px;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  color: #0f4f55;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  transition: transform 0.2s ease;
+}
+
+.row:hover {
+  transform: translateY(-3px);
+}
+
+.row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  height: 100px;
+
+  padding: 19px 16px;
+
+  border-radius: 8px;
+
+  background: #fff;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  font-size: 0.9rem;
+
+  transition: transform 0.2s ease;
+}
+
+.row2 h3 {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+}
+
+.button {
+  background: none;
+
+  border: none;
+  border-radius: 5px;
+
+  padding: 4px;
+
+  opacity: 0.3;
+
+  cursor: pointer;
+}
+
+.slide {
+  max-height: 0;
+
+  overflow: hidden;
+
+  opacity: 0;
+
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease;
+}
+
+.slide.open {
+  max-height: 200px;
+
+  opacity: 1;
+}
+
+.icon {
+  transition: transform 0.25s ease;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.selectButton {
+  width: fit-content;
+
+  padding: 8px 12px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #0f4f55;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.selectButton:hover {
+  opacity: 0.9;
+}
+
+.bannerGestor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+  padding: 5px 28px;
+
+  border-radius: 12px;
+
+  background: #0f4f55;
+
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.botaoAjuste {
+  padding: 10px 50px;
+
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  color: white;
+
+  font-size: 0.95rem;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.botaoAjuste:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
