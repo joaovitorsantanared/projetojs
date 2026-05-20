@@ -1,138 +1,141 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUser } from "@/hooks/useUsers";
 import styles from "./EditarPerfilCard.module.css";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function EditarPerfilCard() {
+  const { usuario, loading, refetch } = useUser();
+
   const [formData, setFormData] = useState({
-    nome: "Samuel Batista Medeiros da Silva",
-    matricula: "******************",
-    email: "samuel.batista@checktime.com.br",
-    senhaAtual: "******************",
+    nome: "",
+    email: "",
     novaSenha: "",
     confirmarSenha: "",
   });
-
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
-  const [avatar, setAvatar] = useState("/follow.png"); // Foto inicial
+  const [avatar, setAvatar] = useState("/follow.png");
   const [fileName, setFileName] = useState("Nenhum arquivo escolhido");
+  const [salvando, setSalvando] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+
+  // Preenche o formulário quando os dados chegam do banco
+  useEffect(() => {
+    if (usuario) {
+      setFormData((prev) => ({
+        ...prev,
+        nome: usuario.nome,
+        email: usuario.email,
+      }));
+    }
+  }, [usuario]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const url = URL.createObjectURL(file);
-      setAvatar(url);
-      setFileName(file.name);
+    if (e.target.files?.[0]) {
+      setAvatar(URL.createObjectURL(e.target.files[0]));
+      setFileName(e.target.files[0].name);
     } else {
       setFileName("Nenhum arquivo escolhido");
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMensagem("");
+
+    if (formData.novaSenha && formData.novaSenha !== formData.confirmarSenha) {
+      setMensagem("As senhas não coincidem.");
+      return;
+    }
+
+    setSalvando(true);
+
+    const res = await fetch("/api/user/me", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome: formData.nome,
+        email: formData.email,
+        novaSenha: formData.novaSenha || undefined,
+      }),
+    });
+
+    setSalvando(false);
+
+    if (res.ok) {
+      setMensagem("Perfil atualizado com sucesso!");
+      setFormData((prev) => ({ ...prev, novaSenha: "", confirmarSenha: "" }));
+      refetch(); // atualiza a sidebar também
+    } else {
+      const data = await res.json();
+      setMensagem(data.message ?? "Erro ao atualizar perfil.");
+    }
+  };
+
+  if (loading) return <p>Carregando...</p>;
+
   return (
     <div className={styles.container}>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <h2 className={styles.title}>EDITAR O PERFIL</h2>
 
         <div>
           <label className={styles.label} htmlFor="nome">Nome completo:</label>
-          <input
-            id="nome"
-            name="nome"
-            type="text"
-            value={formData.nome}
-            onChange={handleChange}
-            className={styles.input}
-          />
-        </div>
-
-        <div>
-          <label className={styles.label} htmlFor="matricula">Matrícula:</label>
-          <input
-            id="matricula"
-            name="matricula"
-            type="password"
-            value={formData.matricula}
-            readOnly
-            className={styles.input}
-          />
+          <input id="nome" name="nome" type="text"
+            value={formData.nome} onChange={handleChange} className={styles.input} />
         </div>
 
         <div>
           <label className={styles.label} htmlFor="email">Email:</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={styles.input}
-          />
+          <input id="email" name="email" type="email"
+            value={formData.email} onChange={handleChange} className={styles.input} />
         </div>
 
         <div className={styles.passwordWrapper}>
-          <label className={styles.label} htmlFor="novaSenha">Nova senha :</label>
-          <input
-            id="novaSenha"
-            name="novaSenha"
+          <label className={styles.label} htmlFor="novaSenha">Nova senha:</label>
+          <input id="novaSenha" name="novaSenha"
             type={showNovaSenha ? "text" : "password"}
-            placeholder="Digite sua senha"
-            value={formData.novaSenha}
-            onChange={handleChange}
-            className={styles.input}
-          />
-          <span
-            className={styles.eyeIcon}
-            onClick={() => setShowNovaSenha(!showNovaSenha)}
-          >
+            placeholder="Digite sua nova senha"
+            value={formData.novaSenha} onChange={handleChange} className={styles.input} />
+          <span className={styles.eyeIcon} onClick={() => setShowNovaSenha(!showNovaSenha)}>
             {showNovaSenha ? <VisibilityOffIcon /> : <VisibilityIcon />}
           </span>
         </div>
 
         <div className={styles.passwordWrapper}>
-          <label className={styles.label} htmlFor="confirmarSenha">Confirmar nova senha :</label>
-          <input
-            id="confirmarSenha"
-            name="confirmarSenha"
+          <label className={styles.label} htmlFor="confirmarSenha">Confirmar nova senha:</label>
+          <input id="confirmarSenha" name="confirmarSenha"
             type={showConfirmarSenha ? "text" : "password"}
             placeholder="Confirme sua senha"
-            value={formData.confirmarSenha}
-            onChange={handleChange}
-            className={styles.input}
-          />
-          <span
-            className={styles.eyeIcon}
-            onClick={() => setShowConfirmarSenha(!showConfirmarSenha)}
-          >
+            value={formData.confirmarSenha} onChange={handleChange} className={styles.input} />
+          <span className={styles.eyeIcon} onClick={() => setShowConfirmarSenha(!showConfirmarSenha)}>
             {showConfirmarSenha ? <VisibilityOffIcon /> : <VisibilityIcon />}
           </span>
         </div>
 
-        <button type="submit" className={styles.button}>
-          SOLICITAR ALTERAÇÃO
+        {mensagem && (
+          <p style={{ color: mensagem.includes("sucesso") ? "green" : "red", fontSize: "0.9rem" }}>
+            {mensagem}
+          </p>
+        )}
+
+        <button type="submit" className={styles.button} disabled={salvando}>
+          {salvando ? "SALVANDO..." : "SOLICITAR ALTERAÇÃO"}
         </button>
       </form>
 
       <div className={styles.rightPanel}>
-        <img
-          src={avatar} 
-          alt="Foto do usuário"
-          className={styles.avatar}
-        />
+        <img src={avatar} alt="Foto do usuário" className={styles.avatar} />
         <label className={styles.chooseFileBtn}>
           ESCOLHER ARQUIVO
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
+          <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
         </label>
         <p style={{ marginTop: "8px", fontSize: "0.9rem", color: "#555" }}>{fileName}</p>
       </div>
