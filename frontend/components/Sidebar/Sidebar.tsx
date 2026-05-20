@@ -53,6 +53,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
 
       <nav className={styles.nav}>
         <button
+        id = "nav-bater-ponto"
           onClick={(e) => {
             e.stopPropagation();
             router.push("/bater-ponto");
@@ -71,6 +72,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
         </button>
 
         <button
+        id = "nav-relatorios-page"
           onClick={(e) => {
             e.stopPropagation();
             router.push("/relatorio-page");
@@ -89,6 +91,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
         </button>
 
         <button
+        id = "nav-solicitacoes"
           onClick={(e) => {
             e.stopPropagation();
             router.push("/solicitacoes");
@@ -107,6 +110,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
         </button>
 
         <button
+        id = "nav-ponto-espelho"
           onClick={(e) => {
             e.stopPropagation();
             router.push("/ponto-espelho");
@@ -127,6 +131,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
 
       <nav className={styles.nav2}>
         <button
+        id = "nav-sair"
           onClick={(e) => {
             e.stopPropagation();
             router.push("/");

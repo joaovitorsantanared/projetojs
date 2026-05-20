@@ -214,3 +214,27 @@ input::placeholder {
     font-size: 22px;
   }
 }
+.msg-sucesso {
+  color: #fff;
+  background: rgba(0, 150, 0, 0.4);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.msg-erro {
+  color: #fff;
+  background: rgba(180, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.erro-campo {
+  color: #ffdddd;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  display: block;
+}

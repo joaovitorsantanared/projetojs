@@ -25,6 +25,7 @@ type Props = {
            {/* PENDENTES */}
 
            <input
+           id = "botao-pedente-solicitacoes"
            className="btn btn-lg checked:bg-[#0C5051] checked:text-white checked:border-[#0C5051] border-2 rounded-2xl"
            type="radio"
            aria-label="Pendentes"

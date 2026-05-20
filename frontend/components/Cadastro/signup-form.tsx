@@ -14,9 +14,9 @@ import Alert from "@mui/material/Alert";
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [message, setMessage] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [alert, setAlert] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,18 +30,15 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
     const newErrors: { email?: string; password?: string } = {};
 
-    // ---- Validações ----
+    // Validações
     if (!emailRegex.test(email)) {
-      setAlert({ type: "error", text: "Digite um email válido!" });
-      return;
-    } else if (email === "teste@empresa.com") {
-      newErrors.email = "Este email já foi cadastrado";
+      newErrors.email = "Digite um email válido!";
     }
 
     if (!password) {
-      newErrors.password = "A Senha é obrigatória";
-    } else if (password && confirm && password !== confirm) {
-      newErrors.password = "Senhas estão diferentes";
+      newErrors.password = "A senha é obrigatória";
+    } else if (password !== confirm) {
+      newErrors.password = "As senhas estão diferentes";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -49,24 +46,22 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
       return;
     }
 
-    setErrors({}); //limpa erros
+    setErrors({});
+    setLoading(true);
 
-    //Chama a action
-    const result = await ValidarCadastro(formData);
-    console.log("Resultado da action:", result);
+    try {
+      const result = await ValidarCadastro(formData);
 
-    setMessage(result.success ? `Sucesso! ${result.message}` : `Erro! ${result.message}`);
-
-    //Resultado do cadastro
-    if (result.success) {
-      localStorage.setItem("usuarioCadastrado", JSON.stringify(email));
-      setAlert({ type: "success", text: "Cadastro realizado com sucesso!" });
-
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
-    } else {
-      setAlert({ type: "error", text: "Erro ao cadastrar. Tente novamente!" });
+      if (result.success) {
+        setAlert({ type: "success", text: "Cadastro realizado com sucesso!" });
+        setTimeout(() => router.push("/"), 1500);
+      } else {
+        setAlert({ type: "error", text: result.message });
+      }
+    } catch {
+      setAlert({ type: "error", text: "Erro ao conectar com o servidor." });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,15 +71,15 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
         <AuthHeader title="CADASTRO" description="Crie sua conta empresarial" />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          
+
           <AuthFormField
-            id="name"
+            id="nome"
             label="Nome"
             type="text"
             placeholder="Digite seu nome completo"
             required
-            name="name"
-            />
+            name="nome"
+          />
 
           <AuthFormField
             id="email"
@@ -93,10 +88,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             placeholder="Digite o seu email"
             required
             name="email"
-            />
-            {errors.email && (
+          />
+          {errors.email && (
             <p className="text-red-500 text-sm -mt-2">{errors.email}</p>
-            )}
+          )}
 
           <AuthFormField
             id="password"
@@ -105,10 +100,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             placeholder="Digite a sua senha"
             required
             name="password"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm -mt-2">{errors.password}</p>
-            )}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm -mt-2">{errors.password}</p>
+          )}
 
           <AuthFormField
             id="confirmPassword"
@@ -119,21 +114,16 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             name="confirmPassword"
           />
 
-          <Button type="submit">CADASTRE-SE</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Cadastrando..." : "CADASTRE-SE"}
+          </Button>
 
-          {/* ALERTA MUI */}
           {alert && (
-            <Alert
-              variant="filled"
-              severity={alert.type}
-              style={{ marginTop: 15 }}
-            >
+            <Alert variant="filled" severity={alert.type} style={{ marginTop: 15 }}>
               {alert.text}
             </Alert>
           )}
         </form>
-
-        {message && <p className="mt-2 text-white">{message}</p>}
 
         <AuthLinks
           signUpHref={routes.login}
