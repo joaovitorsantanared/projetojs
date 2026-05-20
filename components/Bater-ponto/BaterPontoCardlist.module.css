@@ -1,0 +1,94 @@
+.cardscontainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  cursor: default;
+}
+.cardlist {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px #0f4f55;
+  padding: 23px 30px;
+
+  flex: 2;
+  height: 268px;
+  margin: 0;
+}
+
+.cardlist2 {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px #0f4f55;
+  padding: 23px 30px;
+  flex: 1;
+  height: 268px;
+  margin: 0;
+}
+.titulo {
+  color: #0f4f55;
+  font-weight: 500;
+  font-size: 1.5em;
+  margin-bottom: 18px;
+}
+
+.header2 {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  justify-content: center;
+  height: 100%;
+}
+
+.texto3 {
+  color: #0f4f55;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.linha2 {
+  height: 1px;
+  background: #0f4f55;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+}
+
+.table th:first-child,
+.table td:first-child {
+  text-align: left;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  text-align: center;
+}
+
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+}
+
+.table th {
+  color: #0f4f55;
+  font-weight: bolder;
+  font-size: 1.1rem;
+}
+
+.table td {
+  color: #0f4f55;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.8rem 0;
+}
+
+.table thead tr {
+  border-bottom: 2px solid #0f4f55;
+}

@@ -1,0 +1,124 @@
+.container {
+  width: 100%; /* faz o card ocupar toda a largura do título externo */
+  max-width: 1000px; /* opcional, para limitar */
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 32px;
+  display: flex;
+  gap: 48px;
+  box-sizing: border-box; /* para incluir padding na largura */
+}
+
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Removido título interno */
+.title {
+  display: none;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 6px; /* ajuste menor */
+  display: block;
+  color: #0F4F55;
+  font-size: 0.95rem; /* ajuste menor */
+}
+
+.input {
+  width: 100%; /* faz o input ocupar toda a largura do card */
+  padding: 10px 12px;
+  border: 1.5px solid #0F4F55;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.input:focus {
+  box-shadow: 0 0 8px #0F4F55;
+  border-color: #0F4F55;
+}
+
+.input[readonly] {
+  background: #e5e5e5;
+  cursor: not-allowed;
+}
+
+.button {
+  margin-top: 16px;
+  background: #0F4F55;
+  color: white;
+  padding: 10px 0; /* altura menor */
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.button:hover {
+  background: #0d443f;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Avatar fixo */
+.avatar {
+  width: 200px; /* largura fixa */
+  height: 200px; /* altura fixa */
+  border-radius: 50%;
+  border: 2px solid #0F4F55;
+  object-fit: cover; /* mantém proporção da imagem e preenche o container */
+    margin-top: 78px; /* alterar se a parte do avatar vai pra cima ou pra baixo*/
+
+}
+
+.chooseFileBtn {
+  border: 1.5px solid #0F4F55;
+  border-radius: 10px;
+  padding: 8px 90px; /* menor */
+  font-weight: 600;
+  background: transparent;
+  color: #0F4F55;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+  text-align: center;
+}
+
+.chooseFileBtn:hover {
+  background: #0F4F55;
+  color: white;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  top: 68%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+}
+
+.eyeIcon svg {
+  font-size: 1.2rem; /* tamanho do ícone do olho */
+}
