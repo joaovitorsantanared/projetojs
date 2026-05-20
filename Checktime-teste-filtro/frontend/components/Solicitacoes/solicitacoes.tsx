@@ -1,138 +1,153 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./solicitacoes.module.css";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import Filter from "../ui/filter";
 
-const registros = [
-  { data: "02/10/2025 | Quinta-feira", Ajuste_Aprovado: "Ajuste aprovado" },
-  { data: "11/09/2025 | Quinta-feira", Pendente: "Pendente" },
-  { data: "06/08/2025 | Quarta-feira", Pendente: "Pendente" },
-  { data: "17/06/2025 | Terça-feira", Ajuste_Aprovado: "Ajuste aprovado" },
-  { data: "19/03/2025 | Quarta-feira", Ajuste_Aprovado: "Ajuste aprovado" },
-];
+interface Abono {
+  id: number;
+  dataFalta: string;
+  justificativa: string;
+  anexoUrl: string | null;
+  status: "aprovado" | "pendente" | "reprovado";
+  criadoEm: string;
+}
+
+function formatarData(dateStr: string): string {
+  const apenasData = dateStr.split("T")[0];
+  const date = new Date(apenasData + "T12:00:00");
+
+  if (isNaN(date.getTime())) return "Data inválida";
+
+  const diaSemana = date.toLocaleDateString("pt-BR", { weekday: "long" });
+  const diaMesAno = date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const semanaCapitalizado =
+    diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+  return `${diaMesAno} | ${semanaCapitalizado}`;
+}
 
 export default function SolicitacoesList() {
   const router = useRouter();
 
+  const [abonos, setAbonos] = useState<Abono[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  // ESTADO DO FILTRO
   const [filtro, setFiltro] = useState("");
+
+  useEffect(() => {
+    fetch("/api/abono")
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(setAbonos)
+      .catch(() => setErro("Não foi possível carregar as solicitações."))
+      .finally(() => setCarregando(false));
+  }, []);
 
   const toggle = (i: number) =>
     setOpenIndex(openIndex === i ? null : i);
 
-  const handleRedirect = (item: typeof registros[0]) => {
-    if (item.Ajuste_Aprovado) {
+  const handleRedirect = (abono: Abono) => {
+    if (abono.status === "aprovado") {
       router.push("/ajuste-aprovado");
-    } else if (item.Pendente) {
+    } else if (abono.status === "pendente") {
       router.push("/ajuste-pendente");
     }
   };
 
-  // FILTRO DOS REGISTROS
-  const registrosFiltrados =
+  const abonosFiltrados =
     filtro === ""
-      ? registros
-      : registros.filter((item) => {
-          if (filtro === "Aprovado") {
-            return item.Ajuste_Aprovado;
-          }
-
-          if (filtro === "Pendente") {
-            return item.Pendente;
-          }
-        /// Caso seja implementado o ajuste recusado
-        //if (filtro === "Recusado"){
-        //   return item.Recusado;
-        // }
-
+      ? abonos
+      : abonos.filter((a) => {
+          if (filtro === "Aprovado") return a.status === "aprovado";
+          if (filtro === "Pendente") return a.status === "pendente";
           return true;
         });
 
   return (
     <div className="flex flex-col gap-4">
+      <Filter filtro={filtro} setFiltro={setFiltro} />
 
-      <Filter
-        filtro={filtro}
-        setFiltro={setFiltro}
-      />
-
-      {/* LISTA */}
       <div className={`flex flex-col gap-4 ${styles.cardlist}`}>
-        {registrosFiltrados.map((item, i) => (
-          <div key={i} className={styles.card}>
+        {carregando && (
+          <p style={{ color: "#888", textAlign: "center", padding: "2rem" }}>
+            Carregando...
+          </p>
+        )}
 
-            {/* Linha principal */}
-            <div
-              className={`flex justify-between items-center cursor-pointer ${styles.row2}`}
-              onClick={() => toggle(i)}
-            >
+        {!carregando && erro && (
+          <p style={{ color: "red", textAlign: "center", padding: "2rem" }}>
+            {erro}
+          </p>
+        )}
 
-              {/* Esquerda */}
-              <div className="flex items-center gap-2">
-                <ForumRoundedIcon
-                  style={{
-                    color: item.Ajuste_Aprovado
-                      ? "#94FC71"
-                      : item.Pendente
-                      ? "#0F4F55"
-                      : undefined,
-                  }}
-                />
+        {!carregando && !erro && abonosFiltrados.length === 0 && (
+          <p style={{ color: "#888", textAlign: "center", padding: "2rem" }}>
+            Nenhuma solicitação encontrada.
+          </p>
+        )}
 
-                <span>{item.data}</span>
-              </div>
+        {!carregando &&
+          !erro &&
+          abonosFiltrados.map((abono, i) => {
+            const isAprovado = abono.status === "aprovado";
 
-              {/* Centro */}
-              <div className="flex items-center gap-2">
+            return (
+              <div key={abono.id} className={styles.card}>
 
-                {item.Ajuste_Aprovado && (
-                  <h3 className={styles.aprovado}>
-                    {item.Ajuste_Aprovado}
-                  </h3>
-                )}
-
-                {item.Pendente && (
-                  <h3 className={styles.pendente}>
-                    {item.Pendente}
-                  </h3>
-                )}
-
-              </div>
-
-              {/* Direita */}
-              <ArrowForwardIosOutlinedIcon
-                className={`${styles.icon} ${
-                  openIndex === i ? styles.rotate : ""
-                }`}
-                style={{ color: "#006400" }}
-              />
-            </div>
-
-            {/* Slide */}
-            <div
-              className={`${styles.slide} ${
-                openIndex === i ? styles.open : ""
-              }`}
-            >
-              <div className={styles.bannerGestor}>
-                <span>Você recebeu uma mensagem!</span>
-
-                <button
-                  className={styles.botaoAjuste}
-                  onClick={() => handleRedirect(item)}
+                {/* Linha principal */}
+                <div
+                  className={`flex justify-between items-center cursor-pointer ${styles.row2}`}
+                  onClick={() => toggle(i)}
                 >
-                  Ver detalhes
-                </button>
-              </div>
-            </div>
+                  {/* Esquerda */}
+                  <div className="flex items-center gap-2">
+                    <ForumRoundedIcon
+                      style={{ color: isAprovado ? "#94FC71" : "#0F4F55" }}
+                    />
+                    <span>{formatarData(abono.dataFalta)}</span>
+                  </div>
 
-          </div>
-        ))}
+                  {/* Centro */}
+                  <div className="flex items-center gap-2">
+                    <h3 className={isAprovado ? styles.aprovado : styles.pendente}>
+                      {isAprovado ? "Ajuste aprovado" : "Pendente"}
+                    </h3>
+                  </div>
+
+                  {/* Direita */}
+                  <ArrowForwardIosOutlinedIcon
+                    className={`${styles.icon} ${openIndex === i ? styles.rotate : ""}`}
+                    style={{ color: "#006400" }}
+                  />
+                </div>
+
+                {/* Slide */}
+                <div
+                  className={`${styles.slide} ${openIndex === i ? styles.open : ""}`}
+                >
+                  <div className={styles.bannerGestor}>
+                    <span>Você recebeu uma mensagem!</span>
+                    <button
+                      className={styles.botaoAjuste}
+                      onClick={() => handleRedirect(abono)}
+                    >
+                      Ver detalhes
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            );
+          })}
       </div>
     </div>
   );
