@@ -7,27 +7,18 @@ export default function BaterPontoCard() {
   const [jaBateuPonto, setJaBateuPonto] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | "">("");
-
-  const [somSucesso, setSomSucesso] =
-    useState<HTMLAudioElement | null>(null);
-
-  const [somErro, setSomErro] =
-    useState<HTMLAudioElement | null>(null);
+  const [somSucesso, setSomSucesso] = useState<HTMLAudioElement | null>(null);
+  const [somErro, setSomErro] = useState<HTMLAudioElement | null>(null);
 
   const TEMPO_BLOQUEIO = 8 * 60 * 60 * 1000; // 8h
 
   // Sons
   useEffect(() => {
     setSomSucesso(
-      new Audio(
-        "https://www.myinstants.com/media/sounds/deltarune-ominous-cancel.mp3"
-      )
+      new Audio("https://www.myinstants.com/media/sounds/deltarune-ominous-cancel.mp3")
     );
-
     setSomErro(
-      new Audio(
-        "https://www.myinstants.com/media/sounds/deltarune-ominous-sound.mp3"
-      )
+      new Audio("https://www.myinstants.com/media/sounds/deltarune-ominous-sound.mp3")
     );
   }, []);
 
@@ -50,45 +41,56 @@ export default function BaterPontoCard() {
     }
   }, []);
 
-  const handleClick = () => {
-    // Já registrou
-    if (jaBateuPonto) {
-      somErro?.play();
+  const handleClick = async () => {
+    try {
+      if (jaBateuPonto) {
+        somErro?.play();
+        setMensagem("Você já registrou o ponto.");
+        setTipoMensagem("erro");
+        setTimeout(() => {
+          setMensagem("");
+          setTipoMensagem("");
+        }, 3000);
+        return;
+      }
 
-      setMensagem("Você já registrou o ponto.");
-      setTipoMensagem("erro");
+      const response = await fetch("/api/bate-ponto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ acao: "PONTO_REGISTRADO" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao registrar ponto");
+      }
+
+      somSucesso?.play();
+      setJaBateuPonto(true);
+      localStorage.setItem("ultimoPonto", Date.now().toString());
+      setMensagem("Ponto registrado com sucesso!");
+      setTipoMensagem("sucesso");
 
       setTimeout(() => {
         setMensagem("");
         setTipoMensagem("");
       }, 3000);
 
-      return;
+      // libera após 8 horas
+      setTimeout(() => {
+        setJaBateuPonto(false);
+        localStorage.removeItem("ultimoPonto");
+      }, TEMPO_BLOQUEIO);
+
+    } catch (error) {
+      console.error(error);
+      somErro?.play();
+      setMensagem("Erro ao registrar ponto.");
+      setTipoMensagem("erro");
+      setTimeout(() => {
+        setMensagem("");
+        setTipoMensagem("");
+      }, 3000);
     }
-
-    // Registrar ponto
-    somSucesso?.play();
-
-    setJaBateuPonto(true);
-
-    localStorage.setItem(
-      "ultimoPonto",
-      Date.now().toString()
-    );
-
-    setMensagem("Ponto registrado com sucesso!");
-    setTipoMensagem("sucesso");
-
-    setTimeout(() => {
-      setMensagem("");
-      setTipoMensagem("");
-    }, 3000);
-
-    // libera após 8 horas
-    setTimeout(() => {
-      setJaBateuPonto(false);
-      localStorage.removeItem("ultimoPonto");
-    }, TEMPO_BLOQUEIO);
   };
 
   return (
@@ -111,6 +113,7 @@ export default function BaterPontoCard() {
             </div>
 
             <button
+            id = "botao-registrar"
               className={styles.button}
               onClick={handleClick}
               style={{
@@ -122,10 +125,7 @@ export default function BaterPontoCard() {
                 className="mr-0"
                 style={{ marginRight: "8px" }}
               />
-
-              {jaBateuPonto
-                ? "Ponto Registrado"
-                : "Registrar"}
+              {jaBateuPonto ? "Ponto Registrado" : "Registrar"}
             </button>
           </div>
         </div>
@@ -140,11 +140,7 @@ export default function BaterPontoCard() {
               mt-3
               font-semibold
               text-[1.1rem]
-              ${
-                tipoMensagem === "sucesso"
-                  ? "text-[#16a34a]"
-                  : "text-[#dc2626]"
-              }
+              ${tipoMensagem === "sucesso" ? "text-[#16a34a]" : "text-[#dc2626]"}
             `}
           >
             {mensagem}

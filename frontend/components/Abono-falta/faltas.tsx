@@ -11,6 +11,15 @@ interface FormState {
   arquivo: File | null;
 }
 
+interface Erros {
+  dia?: string[];
+  mes?: string[];
+  ano?: string[];
+  justificativa?: string[];
+  arquivo?: string;
+  geral?: string;
+}
+
 function Faltas() {
   const [form, setForm] = useState<FormState>({
     dia: "",
@@ -19,6 +28,10 @@ function Faltas() {
     justificativa: "",
     arquivo: null,
   });
+
+  const [erros, setErros] = useState<Erros>({});
+  const [enviando, setEnviando] = useState(false);
+  const [sucesso, setSucesso] = useState(false);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,21 +42,56 @@ function Faltas() {
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
+    // Limpa o erro do campo ao digitar
+    setErros((prev) => ({ ...prev, [name]: undefined }));
   }
 
   function handleDatePartChange(part: "dia" | "mes" | "ano", value: string) {
-    // Adicione validações se necessário, por exemplo:
-    // if (part === "dia" && (parseInt(value) < 1 || parseInt(value) > 31)) return;
-    // if (part === "mes" && (parseInt(value) < 1 || parseInt(value) > 12)) return;
-    // if (part === "ano" && value.length > 4) return;
-  
     setForm((f) => ({ ...f, [part]: value }));
+    setErros((prev) => ({ ...prev, [part]: undefined }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(form);
-    alert("Solicitação enviada (mock). Veja o console.");
+    setErros({});
+    setEnviando(true);
+    setSucesso(false);
+
+    try {
+      const formData = new FormData();
+      formData.append("dia", form.dia);
+      formData.append("mes", form.mes);
+      formData.append("ano", form.ano);
+      formData.append("justificativa", form.justificativa);
+      if (form.arquivo) formData.append("anexo", form.arquivo);
+
+      const res = await fetch("/api/abono", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+       
+        if (data.detalhes) {
+          setErros(data.detalhes);
+        } else {
+          
+          setErros({ geral: data.erro });
+        }
+        return;
+      }
+
+      
+      setSucesso(true);
+      setForm({ dia: "", mes: "", ano: "", justificativa: "", arquivo: null });
+
+    } catch {
+      setErros({ geral: "Erro ao conectar com o servidor. Tente novamente." });
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function handleBack(e: React.MouseEvent<HTMLButtonElement>) {
@@ -56,11 +104,18 @@ function Faltas() {
       <div className="card">
         <h1 className="card-title">ABONO DE FALTA</h1>
 
+        {sucesso && (
+          <p className="msg-sucesso">Solicitação enviada com sucesso!</p>
+        )}
+
+        {erros.geral && (
+          <p className="msg-erro">{erros.geral}</p>
+        )}
+
         <form onSubmit={handleSubmit} className="card-form">
-        {/* DATA */}
+          {/* DATA */}
           <div className="field-group">
             <label className="field-label">Data:</label>
-
             <div className="date-row">
               <div className="date-field">
                 <span>Dia</span>
@@ -72,6 +127,7 @@ function Faltas() {
                   value={form.dia}
                   onChange={(e) => handleDatePartChange("dia", e.target.value)}
                 />
+                {erros.dia && <span className="erro-campo">{erros.dia[0]}</span>}
               </div>
 
               <div className="date-field">
@@ -84,6 +140,7 @@ function Faltas() {
                   value={form.mes}
                   onChange={(e) => handleDatePartChange("mes", e.target.value)}
                 />
+                {erros.mes && <span className="erro-campo">{erros.mes[0]}</span>}
               </div>
 
               <div className="date-field">
@@ -96,10 +153,12 @@ function Faltas() {
                   value={form.ano}
                   onChange={(e) => handleDatePartChange("ano", e.target.value)}
                 />
+                {erros.ano && <span className="erro-campo">{erros.ano[0]}</span>}
               </div>
             </div>
           </div>
-            {/* JUSTIFICATIVA */}
+
+          
           <div className="field-group">
             <label className="field-label">Justificativa:</label>
             <textarea
@@ -109,27 +168,32 @@ function Faltas() {
               onChange={handleChange}
               rows={5}
             />
+            {erros.justificativa && (
+              <span className="erro-campo">{erros.justificativa[0]}</span>
+            )}
           </div>
-            {/* ANEXO */}
+
+         
           <div className="field-group">
             <label className="field-label">Anexo:</label>
-
             <div className="file-row">
               <label className="file-button">
                 ESCOLHER ARQUIVO
                 <input type="file" name="arquivo" onChange={handleChange} />
               </label>
               <span className="file-name">
-                {form.arquivo
-                  ? form.arquivo.name
-                  : "Nenhum arquivo selecionado"}
+                {form.arquivo ? form.arquivo.name : "Nenhum arquivo selecionado"}
               </span>
             </div>
+            {erros.arquivo && (
+              <span className="erro-campo">{erros.arquivo}</span>
+            )}
           </div>
-              {/* BOTÕES */}
+
+          
           <div className="actions">
-            <button type="submit" className="submit-btn">
-              SOLICITAR
+            <button type="submit" className="submit-btn" disabled={enviando}>
+              {enviando ? "ENVIANDO..." : "SOLICITAR"}
             </button>
             <button className="back-link" onClick={handleBack}>
               VOLTAR

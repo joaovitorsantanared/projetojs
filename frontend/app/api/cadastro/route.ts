@@ -1,20 +1,44 @@
-"use server";
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
-export async function ValidarCadastro(formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const confirm = formData.get("confirmPassword");
+export async function POST(request: NextRequest) {
+  try {
+    const { nome, email, senha } = await request.json();
 
-  // Simula latência de rede / processamento no servidor
-  await new Promise((resolve) => setTimeout(resolve, 1500)); // espera 1.5s
+    if (!nome || !email || !senha) {
+      return NextResponse.json(
+        { message: "Preencha todos os campos" },
+        { status: 400 }
+      );
+    }
 
-  if (password !== confirm) {
-    return { success: false, message: "As senhas não são as mesmas" };
+    const usuarioExistente = await prisma.usuario.findUnique({ where: { email } });
+
+    if (usuarioExistente) {
+      return NextResponse.json(
+        { message: "Email já cadastrado" },
+        { status: 400 }
+      );
+    }
+
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
+
+    const usuario = await prisma.usuario.create({
+      data: { nome, email, senha: senhaCriptografada },
+      select: { id: true, nome: true, email: true }
+    });
+
+    return NextResponse.json(
+      { mensagem: "Usuário cadastrado com sucesso", usuario },
+      { status: 201 }
+    );
+
+  } catch (error) {
+    console.error("ERRO DETALHADO:", error);
+    return NextResponse.json(
+      { message: "Erro interno no servidor" },
+      { status: 500 }
+    );
   }
-
-  if (email === "teste@empresa.com") {
-    return { success: false, message: "Este email já foi cadastrado" };
-  }
-
-  return { success: true, message: "A sua conta foi criada com sucesso!" };
 }
