@@ -1,0 +1,77 @@
+.card {
+  min-height: 500px;
+  box-shadow: 0 2px 6px #0f4f55;
+  display: flex;
+  flex: 1;
+  gap: 24px;
+  border-radius: 13px;
+}
+.cardContainer {
+  display: flex;
+}
+
+.cardBackground {
+  position: relative;
+  width: 100%;
+  border-radius: 13px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px #0f4f55;
+}
+
+.overlayContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.overlayContent > * {
+  pointer-events: auto;
+}
+
+.button {
+  align-items: center;
+  justify-content: center;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 13px;
+  background-color: #0f4f55;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  font-size: 1.5rem;
+  color: white;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.button:hover {
+  background-color: #15803d;
+  transform: scale(1.05);
+}
+
+.button2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  background-color: #1f2937;
+  opacity: 0.6;
+  padding: 10px 20px;
+  border-radius: 13px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  font-family: monospace;
+  color: white;
+  text-align: center;
+  width: 300px;
+  height: 150px;
+  transition: 0.2s ease;
+}
