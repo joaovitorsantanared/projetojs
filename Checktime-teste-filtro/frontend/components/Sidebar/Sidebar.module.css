@@ -1,0 +1,338 @@
+.sidebar {
+  width: 280px;
+  height: 100dvh;
+
+  position: fixed;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 20px;
+
+  background: linear-gradient(90deg, #1b6d54, #4ea460);
+
+  color: white;
+
+  transition:
+    width 0.3s ease,
+    padding 0.3s ease;
+}
+
+/* SIDEBAR MINIMIZADA */
+
+.minimized {
+  width: 80px;
+  padding: 20px 10px;
+}
+
+/* PERFIL */
+
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileimg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 5px;
+}
+
+.profileimg div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  text-align: center;
+}
+
+/* WRAPPER DA IMAGEM */
+
+.imageWrapper {
+  position: relative;
+
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.imageWrapper:hover {
+  transform: scale(1.03);
+
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* CAMADA BRANCA */
+
+.imageWrapper::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.2);
+
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+}
+
+.imageWrapper:hover::after {
+  opacity: 1;
+}
+
+/* IMAGEM */
+
+.downloadImg {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+  border: 3px solid white;
+
+  display: block;
+}
+
+/* TEXTO */
+
+.name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.job {
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* NAVEGAÇÃO */
+
+.nav,
+.nav2 {
+  display: flex;
+  flex-direction: column;
+
+  width: auto;
+
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.nav {
+  margin-top: 20px;
+}
+
+.nav2 {
+  margin-top: auto;
+}
+
+/* BOTÕES */
+
+.button,
+.logout {
+  position: relative;
+
+  overflow: hidden;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  padding: 18px 16px;
+
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 1.1rem;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    padding 0.3s ease;
+}
+
+/* CONTEÚDO DOS BOTÕES */
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  position: relative;
+  z-index: 2;
+
+  transition: transform 0.3s ease;
+}
+
+.button:hover .buttonContent,
+.logout:hover .buttonContent {
+  transform: translateX(6px);
+}
+
+/* GRADIENTE HOVER */
+
+.button::before,
+.logout::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), transparent);
+
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+}
+
+/* FAIXA BRANCA */
+
+.button::after,
+.logout::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background: white;
+
+  transform: scaleY(0);
+
+  transform-origin: center;
+
+  transition: transform 0.3s ease;
+}
+
+/* HOVER */
+
+.button:hover::before,
+.logout:hover::before {
+  opacity: 1;
+}
+
+.button:hover::after,
+.logout:hover::after {
+  transform: scaleY(1);
+}
+
+/* BOTÃO ATIVO */
+
+.active::before {
+  opacity: 1;
+}
+
+.active::after {
+  transform: scaleY(1);
+}
+
+.active .buttonContent {
+  transform: translateX(6px);
+}
+
+/* ÍCONES */
+
+.button svg,
+.logout svg {
+  font-size: 1.6rem;
+
+  flex-shrink: 0;
+}
+
+/* MINIMIZADO */
+
+.minimized .button,
+.minimized .logout {
+  justify-content: center;
+
+  padding: 14px 8px;
+}
+
+.minimized .buttonContent {
+  justify-content: center;
+}
+
+.minimized .nav {
+  padding: 12px 5px;
+}
+
+.minimized .nav2 {
+  padding: 16px 5px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+
+    height: auto;
+
+    position: relative;
+
+    padding: 15px;
+  }
+
+  .minimized {
+    width: 100%;
+
+    height: 60px;
+
+    overflow: hidden;
+  }
+
+  .nav,
+  .nav2 {
+    margin-top: 10px;
+  }
+
+  .minimized .nav,
+  .minimized .nav2 {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 10px;
+  }
+
+  .button,
+  .logout {
+    padding: 10px 12px;
+
+    font-size: 0.95rem;
+  }
+
+  .button svg,
+  .logout svg {
+    font-size: 1.3rem;
+  }
+}
