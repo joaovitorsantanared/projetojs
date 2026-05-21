@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
+  
+  console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+
   try {
     const { nome, email, senha } = await request.json();
 
@@ -11,6 +14,7 @@ export async function POST(request: NextRequest) {
         { message: "Preencha todos os campos" },
         { status: 400 }
       );
+
     }
 
     const usuarioExistente = await prisma.usuario.findUnique({ where: { email } });
