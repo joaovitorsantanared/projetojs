@@ -11,7 +11,11 @@ export async function ValidarCadastro(formData: FormData) {
   }
 
   try{
-    const response = await fetch("http://localhost:3000/api/auth/cadastro", {
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : "http://localhost:3000";
+      
+    const response = await fetch("${baseUrl}/api/auth/cadastro", {
       method: "POST",
       headers:{
         "Content-Type": "application/json",
@@ -26,7 +30,7 @@ export async function ValidarCadastro(formData: FormData) {
     }
     return { success: true, message: "Cadastro realizado com sucesso!" };
 
-  } catch (_error) {
+  } catch (error) {
     return { success: false, message: "Erro ao conectar com o servidor!" };
   } 
 }

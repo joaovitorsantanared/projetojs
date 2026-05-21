@@ -7,7 +7,11 @@ export async function loginAction(formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const res = await fetch("http://localhost:3000/api/login", {
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : "http://localhost:3000";
+
+  const res = await fetch("${baseUrl}/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, senha: password }),
