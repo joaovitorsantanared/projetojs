@@ -26,7 +26,7 @@ export async function ValidarCadastro(formData: FormData) {
     }
     return { success: true, message: "Cadastro realizado com sucesso!" };
 
-  } catch (error) {
+  } catch (_error) {
     return { success: false, message: "Erro ao conectar com o servidor!" };
   } 
 }

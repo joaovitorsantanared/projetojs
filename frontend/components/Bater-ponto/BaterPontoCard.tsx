@@ -3,6 +3,8 @@ import styles from "./BaterPontoCard.module.css";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import Relogio from "../../app/bater-ponto/Relogio";
 
+const TEMPO_BLOQUEIO = 5 * 60 * 1000; // 5 minutos
+
 export default function BaterPontoCard() {
   const [jaBateuPonto, setJaBateuPonto] = useState(false);
   const [mensagem, setMensagem] = useState("");
@@ -10,7 +12,7 @@ export default function BaterPontoCard() {
   const [somSucesso, setSomSucesso] = useState<HTMLAudioElement | null>(null);
   const [somErro, setSomErro] = useState<HTMLAudioElement | null>(null);
 
-  const TEMPO_BLOQUEIO = 5 * 60 * 60 * 1000; // 5 minutos
+  
 
   // Sons
   useEffect(() => {
@@ -113,7 +115,6 @@ export default function BaterPontoCard() {
             </div>
 
             <button
-            id = "botao-registrar"
               className={styles.button}
               onClick={handleClick}
               style={{
