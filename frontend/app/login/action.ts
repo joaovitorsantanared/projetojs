@@ -11,7 +11,7 @@ export async function loginAction(formData: FormData) {
     ? `https://${process.env.VERCEL_URL}` 
     : "http://localhost:3000";
 
-  const res = await fetch("${baseUrl}/api/login", {
+  const res = await fetch(`${baseUrl}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, senha: password }),

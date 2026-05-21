@@ -14,8 +14,8 @@ export async function ValidarCadastro(formData: FormData) {
     const baseUrl = process.env.VERCEL_URL 
       ? `https://${process.env.VERCEL_URL}` 
       : "http://localhost:3000";
-      
-    const response = await fetch("${baseUrl}/api/auth/cadastro", {
+
+    const response = await fetch(`${baseUrl}/api/cadastro`, {
       method: "POST",
       headers:{
         "Content-Type": "application/json",
