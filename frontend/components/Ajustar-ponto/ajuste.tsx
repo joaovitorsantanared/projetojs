@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-// @ts-ignore: allow importing CSS without type declarations
+// @ts-expect-error
 import "./ajuste.css";
 
 interface FormState {
