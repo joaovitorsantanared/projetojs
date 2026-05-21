@@ -219,3 +219,5 @@ function AjustePonto() {
 }
 
 export default AjustePonto;
+
+//ad
