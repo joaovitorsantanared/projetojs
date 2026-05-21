@@ -3,4 +3,3 @@ export default function AbonoFaltaPage() {
   return <Faltas />;
 }
 
-//aeiou
