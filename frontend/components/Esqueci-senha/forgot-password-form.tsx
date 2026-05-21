@@ -20,11 +20,12 @@ export function ForgotPasswordForm({
         
         <AuthFormField
           id="email"
+          name="email"   // ← add this line
           label=""
           type="email"
-          placeholder="Digite seu email para recuperar a senha"
+          placeholder="..."
           required
-        />
+          />
 
         <Button type="submit">ENVIAR</Button>
         
