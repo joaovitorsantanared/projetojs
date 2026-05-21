@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-// @ts-expect-error importing css file
 import "./ajuste.css";
 
 interface FormState {
@@ -220,4 +219,3 @@ function AjustePonto() {
 
 export default AjustePonto;
 
-//ad
