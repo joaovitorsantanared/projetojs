@@ -10,7 +10,7 @@ export default function BaterPontoCard() {
   const [somSucesso, setSomSucesso] = useState<HTMLAudioElement | null>(null);
   const [somErro, setSomErro] = useState<HTMLAudioElement | null>(null);
 
-  const TEMPO_BLOQUEIO = 8 * 60 * 60 * 1000; // 8h
+  const TEMPO_BLOQUEIO = 5 * 60 * 60 * 1000; // 5 minutos
 
   // Sons
   useEffect(() => {

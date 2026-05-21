@@ -2,6 +2,7 @@
 
 import styles from "./Sidebar.module.css";
 import { useRouter, usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useUsers";
 
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import FeedIcon from "@mui/icons-material/Feed";
@@ -17,6 +18,7 @@ type SidebarProps = {
 export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { usuario, loading } = useUser();
 
   return (
     <aside
@@ -25,32 +27,33 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
       onClick={() => setIsMinimized((prev) => !prev)}
     >
       {!isMinimized && (
-        <div className={styles.profileimg}>
-          <div className={styles.profile}>
-            <div
-              className={styles.imageWrapper}
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push("/editar-perfil");
-              }}
-            >
-              <img
-                src="/follow.png"
-                alt="User"
-                width={100}
-                height={100}
-                className={styles.downloadImg}
-              />
-            </div>
-          </div>
+  <div className={styles.profileimg}>
+    <div className={styles.profile}>
+      <div
+        className={styles.imageWrapper}
+        onClick={(e) => {
+          e.stopPropagation();
+          router.push("/editar-perfil");
+        }}
+      >
+        <img
+          src="/follow.png"
+          alt="User"
+          width={100}
+          height={100}
+          className={styles.downloadImg}
+        />
+      </div>
+    </div>
 
-          <div>
-            <p className={styles.name}>Samuel Batista</p>
-            <p className={styles.job}>Analista TI</p>
-          </div>
-        </div>
-      )}
-
+    <div>
+      <p className={styles.name}>
+        {loading ? "..." : (usuario?.nome.split(" ")[0] ?? "Usuário")}
+      </p>
+      <p className={styles.job}>Analista TI</p>
+    </div>
+  </div>
+)}
       <nav className={styles.nav}>
         <button
         id = "nav-bater-ponto"
