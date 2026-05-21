@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/hooks/useUsers";
 import styles from "./EditarPerfilCard.module.css";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Image from "next/image";
 
 export default function EditarPerfilCard() {
   const { usuario, loading, refetch } = useUser();
+
+  const carregouUsuario = useRef(false);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -15,6 +18,7 @@ export default function EditarPerfilCard() {
     novaSenha: "",
     confirmarSenha: "",
   });
+
   const [showNovaSenha, setShowNovaSenha] = useState(false);
   const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
   const [avatar, setAvatar] = useState("/follow.png");
@@ -22,19 +26,25 @@ export default function EditarPerfilCard() {
   const [salvando, setSalvando] = useState(false);
   const [mensagem, setMensagem] = useState("");
 
-  // Preenche o formulário quando os dados chegam do banco
+  // Preenche o formulário apenas uma vez
   useEffect(() => {
-    if (usuario) {
-      setFormData((prev) => ({
-        ...prev,
+    if (usuario && !carregouUsuario.current) {
+      carregouUsuario.current = true;
+
+      setFormData({
         nome: usuario.nome,
         email: usuario.email,
-      }));
+        novaSenha: "",
+        confirmarSenha: "",
+      });
     }
   }, [usuario]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,25 +67,37 @@ export default function EditarPerfilCard() {
 
     setSalvando(true);
 
-    const res = await fetch("/api/user/me", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nome: formData.nome,
-        email: formData.email,
-        novaSenha: formData.novaSenha || undefined,
-      }),
-    });
+    try {
+      const res = await fetch("/api/user/me", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: formData.nome,
+          email: formData.email,
+          novaSenha: formData.novaSenha || undefined,
+        }),
+      });
 
-    setSalvando(false);
+      if (res.ok) {
+        setMensagem("Perfil atualizado com sucesso!");
 
-    if (res.ok) {
-      setMensagem("Perfil atualizado com sucesso!");
-      setFormData((prev) => ({ ...prev, novaSenha: "", confirmarSenha: "" }));
-      refetch(); // atualiza a sidebar também
-    } else {
-      const data = await res.json();
-      setMensagem(data.message ?? "Erro ao atualizar perfil.");
+        setFormData((prev) => ({
+          ...prev,
+          novaSenha: "",
+          confirmarSenha: "",
+        }));
+
+        refetch();
+      } else {
+        const data = await res.json();
+        setMensagem(data.message ?? "Erro ao atualizar perfil.");
+      }
+    } catch {
+      setMensagem("Erro inesperado.");
+    } finally {
+      setSalvando(false);
     }
   };
 
