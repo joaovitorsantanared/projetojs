@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-// @ts-expect-error
+// @ts-expect-error importing css file
 import "./ajuste.css";
 
 interface FormState {

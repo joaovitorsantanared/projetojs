@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     return response;
 
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { message: "Erro interno no servidor" },
       { status: 500 }
