@@ -28,9 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Script
+          id="dynatrace-run"
           src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/c6dcaeb5d8926c95_complete.js"
           strategy="beforeInteractive"
           crossOrigin="anonymous"
+          
         />
         {children}
 
