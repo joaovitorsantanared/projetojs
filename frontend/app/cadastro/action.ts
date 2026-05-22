@@ -1,5 +1,8 @@
-
 "use server";
+
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 
 export async function ValidarCadastro(formData: FormData) {
   const nome = formData.get("nome") as string;
@@ -10,28 +13,23 @@ export async function ValidarCadastro(formData: FormData) {
     return { success: false, message: "Preencha todos os campos!" };
   }
 
-  try{
-    const baseUrl = process.env.DATABASE_URL
-      ? `https://${process.env.DATABASE_URL}` 
-      : "http://localhost:3000";
+  try {
+    const usuarioExistente = await prisma.usuario.findUnique({ where: { email } });
 
-    const response = await fetch(`${baseUrl}/api/cadastro`, {
-      method: "POST",
-      headers:{
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nome, email, senha }),
-      });
-
-      const data = await response.json();
-
-      if(!response.ok){
-        return { success: false, message: data.message};
+    if (usuarioExistente) {
+      return { success: false, message: "Email já cadastrado" };
     }
-    return { success: true, message: "Cadastro realizado com sucesso!" };
+
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
+
+    await prisma.usuario.create({
+      data: { nome, email, senha: senhaCriptografada },
+    });
 
   } catch (error) {
+    console.error("ERRO CADASTRO:", error);
     return { success: false, message: "Erro ao conectar com o servidor!" };
-  } 
-}
+  }
 
+  redirect("/login");
+}

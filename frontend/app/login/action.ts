@@ -1,40 +1,43 @@
 "use server";
 
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function loginAction(formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
+  const email = formData.get("email") as string;
+  const senha = formData.get("password") as string;
 
-  const baseUrl = process.env.DATABASE_URL 
-    ? `https://${process.env.DATABASE_URL}` 
-    : "http://localhost:3000";
+  if (!email || !senha) redirect("/login?error=1");
 
-  const res = await fetch(`${baseUrl}/api/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, senha: password }),
-  });
+  try {
+    const usuario = await prisma.usuario.findUnique({ where: { email } });
+    if (!usuario) redirect("/login?error=1");
 
-  console.log("STATUS:", res.status);
-  console.log("OK:", res.ok);
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    if (!senhaValida) redirect("/login?error=1");
 
-  if (!res.ok) {
+    const token = jwt.sign(
+      { id: usuario.id, email: usuario.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: "1d" }
+    );
+
+    const cookieStore = await cookies();
+    cookieStore.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24,
+      path: "/",
+    });
+
+  } catch (error) {
+    console.error("ERRO LOGIN:", error);
     redirect("/login?error=1");
   }
-
-  const data = await res.json();
-  console.log("DATA:", data);
-
-  const cookieStore = await cookies();
-  cookieStore.set("token", data.token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24,
-    path: "/",
-  });
 
   redirect("/bater-ponto");
 }
