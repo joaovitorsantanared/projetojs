@@ -25,14 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
+      <head>
+        <script
+          type="text/javascript"
+          src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/c6dcaeb5d8926c95_complete.js"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <script type="text/javascript"
-         src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/c6dcaeb5d8926c95_complete.js" 
-         crossorigin="anonymous"></script>
         {children}
-
-        
       </body>
     </html>
   );
