@@ -52,6 +52,21 @@ function validarcampos(
   return erros;
 }
 
+export async function GET() {
+  try {
+    const abonos = await prisma.abonoDeFalta.findMany({
+      orderBy: { criadoEm: "desc" },
+    });
+    return NextResponse.json(abonos);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { erro: "Erro ao buscar solicitações" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST (request: NextRequest) {
     try {
         const formData = await request.formData();
@@ -133,4 +148,7 @@ export async function POST (request: NextRequest) {
       { status: 500 }
     );
   }
+
+  
 }
+
