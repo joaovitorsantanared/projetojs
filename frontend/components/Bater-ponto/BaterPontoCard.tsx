@@ -115,7 +115,7 @@ export default function BaterPontoCard() {
             </div>
 
             <button
-            id = "botao_Login"
+            id = "botao_Registrar"
               className={styles.button}
               onClick={handleClick}
               style={{
