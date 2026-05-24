@@ -120,6 +120,7 @@ function Faltas() {
               <div className="date-field">
                 <span>Dia</span>
                 <input
+                  id = "nav-dia-abono"
                   type="text"
                   inputMode="numeric"
                   placeholder="DD"
@@ -133,6 +134,7 @@ function Faltas() {
               <div className="date-field">
                 <span>Mês</span>
                 <input
+                  id = "nav-mes-abono"
                   type="text"
                   inputMode="numeric"
                   placeholder="MM"
@@ -146,6 +148,7 @@ function Faltas() {
               <div className="date-field">
                 <span>Ano</span>
                 <input
+                  id = "nav-ano-abono"
                   type="text"
                   inputMode="numeric"
                   placeholder="AAAA"
@@ -162,6 +165,7 @@ function Faltas() {
           <div className="field-group">
             <label className="field-label">Justificativa:</label>
             <textarea
+              id = "nav-justificativa-abono"
               name="justificativa"
               placeholder="Digite aqui a justificativa de abono de falta..."
               value={form.justificativa}
@@ -192,10 +196,10 @@ function Faltas() {
 
           
           <div className="actions">
-            <button type="submit" className="submit-btn" disabled={enviando}>
+            <button id = "nav-solicitar-abono" type="submit" className="submit-btn" disabled={enviando}>
               {enviando ? "ENVIANDO..." : "SOLICITAR"}
             </button>
-            <button className="back-link" onClick={handleBack}>
+            <button id = "nav-voltar-abono" className="back-link" onClick={handleBack}>
               VOLTAR
             </button>
           </div>

@@ -30,6 +30,7 @@ export default function Sidebar({ isMinimized, setIsMinimized }: SidebarProps) {
   <div className={styles.profileimg}>
     <div className={styles.profile}>
       <div
+        id = "nav-editar-pertil"
         className={styles.imageWrapper}
         onClick={(e) => {
           e.stopPropagation();

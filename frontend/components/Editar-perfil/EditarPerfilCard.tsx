@@ -148,7 +148,7 @@ export default function EditarPerfilCard() {
           </p>
         )}
 
-        <button type="submit" className={styles.button} disabled={salvando}>
+        <button id = "editar-perfil" type="submit" className={styles.button} disabled={salvando}>
           {salvando ? "SALVANDO..." : "SOLICITAR ALTERAÇÃO"}
         </button>
       </form>

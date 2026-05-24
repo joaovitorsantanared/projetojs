@@ -70,6 +70,7 @@ export default function RelatorioPage() {
                 <span>Total</span>
 
                 <Link
+                  id = "nav-abono-faltas"
                   href="/abono-falta"
                   style={{
                     textDecoration: "underline",
